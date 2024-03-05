@@ -1,12 +1,11 @@
-package com.fiap.techchallenge.order.domain.models;
+package com.fiap.techchallenge.order.domain.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.fiap.techchallenge.order.domain.enums.StatusEnum;
+import com.fiap.techchallenge.order.domain.enums.OrderStatusEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,14 +17,18 @@ import lombok.NonNull;
 public class Order {
 
     private Long id;
-    private StatusEnum status;
+    private OrderStatusEnum status;
     private String clientName;
     private Long customerId;
     private String paymentMethod;
     private BigDecimal totalPrice;
-    private LocalDate createdAt;
-
     private List<Item> ItemList;
+
+    @Builder(builderMethodName = "builder")
+    public static Order newOrder(@NonNull String clientName, Long customerId, @NonNull String paymentMethod) {
+        return new Order(null, OrderStatusEnum.NEW, clientName, customerId, paymentMethod, new BigDecimal(0.0),
+                new ArrayList<>());
+    }
 
     public void updateId(Long id) {
         Objects.requireNonNull(id);
@@ -33,16 +36,12 @@ public class Order {
         this.id = id;
     }
 
-    @Builder(builderMethodName = "builder")
-    public static Order newOrder(@NonNull String clientName, Long customerId, @NonNull String paymentMethod) {
-        return new Order(null, StatusEnum.NEW, clientName, customerId, paymentMethod, new BigDecimal(0.0),
-                LocalDate.now(), new ArrayList<>());
-    }
-
-    public void addItem(@NonNull Item item) {
+    public Order addItem(@NonNull Item item) {
         BigDecimal itemTotalPrice = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
         totalPrice = totalPrice.add(itemTotalPrice);
         ItemList.add(item);
+
+        return this;
     }
 
     public int getTotalItems() {

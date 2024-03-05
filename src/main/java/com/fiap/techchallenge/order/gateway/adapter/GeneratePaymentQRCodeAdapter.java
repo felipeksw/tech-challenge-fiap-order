@@ -17,6 +17,7 @@ public class GeneratePaymentQRCodeAdapter implements GeneratePaymentQRCodePort {
     private final WebClient webClient;
 
     public GeneratePaymentQRCodeAdapter(@Value("${payment.url}") String paymentUrl) {
+
         this.webClient = WebClient.builder()
                 .baseUrl(paymentUrl)
                 .defaultHeader("Content-Type", "application/json")

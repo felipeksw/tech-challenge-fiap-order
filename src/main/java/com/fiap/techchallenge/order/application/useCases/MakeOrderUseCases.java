@@ -8,11 +8,12 @@ import com.fiap.techchallenge.order.application.exceptions.GetProductException;
 import com.fiap.techchallenge.order.application.exceptions.MakeOrderException;
 import com.fiap.techchallenge.order.application.services.OrderService;
 import com.fiap.techchallenge.order.application.services.ProductService;
-import com.fiap.techchallenge.order.domain.models.Order;
-import com.fiap.techchallenge.order.domain.models.Product;
+import com.fiap.techchallenge.order.domain.entity.Order;
+import com.fiap.techchallenge.order.domain.entity.Product;
 import com.fiap.techchallenge.order.gateway.exception.GeneratePaymentQRCodeException;
 import com.fiap.techchallenge.order.gateway.port.GeneratePaymentQRCodePort;
 import com.fiap.techchallenge.order.gateway.port.SendRequestedPaymentPort;
+import com.fiap.techchallenge.order.util.ConstantsUtil;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,7 +58,7 @@ public class MakeOrderUseCases {
                 .build();
 
         for (Command.OrderItem orderItem : cmd.orderItemList) {
-            Product product = productService.getProduct(orderItem.productId());
+            Product product = productService.findProduct(orderItem.productId());
 
             Order.Item item = Order.Item.builder()
                     .price(product.getPrice())
@@ -77,7 +78,7 @@ public class MakeOrderUseCases {
                 .orderId(order.getId())
                 .quantity(Long.valueOf(order.getTotalItems()))
                 .price(order.getTotalPrice())
-                .title("TC Grupo36: " + order.getClientName())
+                .title(ConstantsUtil.PAYMENT_TITLE_PREFIX + order.getClientName())
                 .build();
 
         return generatePaymentQRCodePort.generate(request);
@@ -101,4 +102,5 @@ public class MakeOrderUseCases {
             Long orderId,
             String qrCode) {
     }
+
 }

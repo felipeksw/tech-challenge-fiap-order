@@ -2,7 +2,7 @@ package com.fiap.techchallenge.order.gateway.mappers;
 
 import org.springframework.stereotype.Component;
 
-import com.fiap.techchallenge.order.domain.models.Product;
+import com.fiap.techchallenge.order.domain.entity.Product;
 import com.fiap.techchallenge.order.gateway.entity.ProductEntity;
 
 @Component

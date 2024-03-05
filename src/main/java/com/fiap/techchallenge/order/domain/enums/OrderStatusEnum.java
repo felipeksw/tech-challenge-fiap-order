@@ -1,12 +1,12 @@
 package com.fiap.techchallenge.order.domain.enums;
 
-public enum StatusEnum {
+public enum OrderStatusEnum {
 
     NEW("new");
 
-    private String status;
+    private final String status;
 
-    StatusEnum(String status) {
+    OrderStatusEnum(String status) {
         this.status = status;
     }
 

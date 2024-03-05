@@ -3,7 +3,7 @@ package com.fiap.techchallenge.order.application.services;
 import org.springframework.stereotype.Service;
 
 import com.fiap.techchallenge.order.application.exceptions.SaveOrderException;
-import com.fiap.techchallenge.order.domain.models.Order;
+import com.fiap.techchallenge.order.domain.entity.Order;
 import com.fiap.techchallenge.order.gateway.entity.OrderEntity;
 import com.fiap.techchallenge.order.gateway.mappers.OrderMapper;
 import com.fiap.techchallenge.order.gateway.repository.OrderRepository;

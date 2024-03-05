@@ -1,4 +1,4 @@
-package com.fiap.techchallenge.order.domain.models;
+package com.fiap.techchallenge.order.domain.entity;
 
 import java.math.BigDecimal;
 
@@ -12,8 +12,8 @@ public class Product {
 
     private Long id;
 
-    @NonNull private String category;
-    @NonNull private String description;
+    private String category;
+    private String description;
     @NonNull private BigDecimal price;
 
 }

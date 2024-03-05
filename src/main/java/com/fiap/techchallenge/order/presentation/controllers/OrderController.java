@@ -3,14 +3,13 @@ package com.fiap.techchallenge.order.presentation.controllers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fiap.techchallenge.order.application.useCases.MakeOrderUseCases;
@@ -24,18 +23,23 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping
+@Validated
+@RequestMapping("/order")
 @Tag(name = "Pedidos", description = "Operações para realização de pedidos")
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class OrderController {
 
     private final MakeOrderUseCases makeOrderUseCases;
 
-    @Operation(summary = "Atualizar status da ordem")
+    @Operation(summary = "Realizar um pedido")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedido realizado", content = {
                     @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class))
@@ -47,10 +51,8 @@ public class OrderController {
                     @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorResponseDto.class))
             })
     })
-    @PostMapping(value = "/order")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Response> updateOrderStatus(
-            @RequestBody Request orderRequest) {
+    @PostMapping
+    public ResponseEntity<Response> makeOrder(@RequestBody @Valid Request orderRequest) throws Exception {
 
         try {
             Result orderResult = makeOrderUseCases.makeOrder(createCommand(orderRequest));
@@ -86,14 +88,14 @@ public class OrderController {
 
     @Builder
     public record Request(
-            String clientName,
-            String paymentMethod,
-            OrderRequestItem[] orderItems) {
+            @NotBlank(message = "O nome do cliente é obrigatório") String clientName,
+            @NotBlank(message = "O método de pagamento é obrigatório") String paymentMethod,
+            @NotEmpty(message = "Pelo menos um item de pedido é obrigatório") OrderRequestItem[] orderItems) {
 
         @Builder
         public record OrderRequestItem(
-                Long productId,
-                Long quantity) {
+                @NotNull(message = "O ID do produto é obrigatório") Long productId,
+                @NotNull(message = "A quantidade do produto é obrigatória") Long quantity) {
         }
 
     }

@@ -55,7 +55,7 @@ public class SendRequestedPaymentAdapter implements SendRequestedPaymentPort {
     }
 
     @Builder
-    private record Payload(
+    protected record Payload(
             String orderId) {
     }
 
