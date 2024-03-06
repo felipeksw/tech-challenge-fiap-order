@@ -54,13 +54,9 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Response> makeOrder(@RequestBody @Valid Request orderRequest) throws Exception {
 
-        try {
-            Result orderResult = makeOrderUseCases.makeOrder(createCommand(orderRequest));
+        Result orderResult = makeOrderUseCases.makeOrder(createCommand(orderRequest));
 
-            return ResponseEntity.status(HttpStatus.OK).body(createResponse(orderResult));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(createResponse(orderResult));
     }
 
     public Command createCommand(Request orderRequest) {
@@ -90,7 +86,7 @@ public class OrderController {
     public record Request(
             @NotBlank(message = "O nome do cliente é obrigatório") String clientName,
             @NotBlank(message = "O método de pagamento é obrigatório") String paymentMethod,
-            @NotEmpty(message = "Pelo menos um item de pedido é obrigatório") OrderRequestItem[] orderItems) {
+            @NotEmpty(message = "Pelo menos um item de pedido é obrigatório") @Valid OrderRequestItem[] orderItems) {
 
         @Builder
         public record OrderRequestItem(

@@ -15,13 +15,13 @@ import com.fiap.techchallenge.order.gateway.port.GeneratePaymentQRCodePort;
 import com.fiap.techchallenge.order.gateway.port.SendRequestedPaymentPort;
 import com.fiap.techchallenge.order.util.ConstantsUtil;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MakeOrderUseCases {
 
     private final OrderService orderService;

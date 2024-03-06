@@ -1,6 +1,7 @@
 package com.fiap.techchallenge.order.presentation.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fiap.techchallenge.order.application.exceptions.MakeOrderException;
 import com.fiap.techchallenge.order.application.useCases.MakeOrderUseCases;
 
 import org.junit.jupiter.api.Test;
@@ -80,7 +81,7 @@ public class OrderControllerTest {
                 .orderItems(new OrderController.Request.OrderRequestItem[] {
                         new OrderController.Request.OrderRequestItem(1L, 2L) })
                 .build();
-        when(makeOrderUseCases.makeOrder(any())).thenThrow(new RuntimeException());
+        when(makeOrderUseCases.makeOrder(any())).thenThrow(new MakeOrderException("Falha ao realizar pedido"));
 
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/order")
