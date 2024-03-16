@@ -4,7 +4,8 @@ COPY . /app
 
 WORKDIR /app
 
-#RUN mkdir /var/log/tech-challenge-api && chmod 777 -R /var/log/tech-challenge-api
+RUN chmod 755 ./gradlew
+
 RUN ./gradlew clean build \
     && mv build/libs/order-*.jar /app/app.jar \
     && rm -rf build
