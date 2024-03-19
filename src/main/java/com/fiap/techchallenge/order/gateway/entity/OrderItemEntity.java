@@ -16,17 +16,20 @@ public class OrderItemEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "varchar(255) DEFAULT NULL")
     private String description;
 
-    @Column(name = "product_id")
+    @Column(name = "additional_info", columnDefinition = "varchar(255) DEFAULT NULL")
+    private String additionalInfo;
+
+    @Column(name = "product_id", columnDefinition = "bigint(20) DEFAULT NULL")
     private Long productId;
 
-    @Column(name = "quantity")
+    @Column(name = "quantity", columnDefinition = "bigint(20) DEFAULT NULL")
     private Long quantity;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
+    @JoinColumn(name = "order_id", columnDefinition = "bigint(20) DEFAULT NULL")
     private OrderEntity order;
 
 }

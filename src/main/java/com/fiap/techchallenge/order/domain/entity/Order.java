@@ -1,6 +1,7 @@
 package com.fiap.techchallenge.order.domain.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,15 +20,16 @@ public class Order {
     private Long id;
     private OrderStatusEnum status;
     private String clientName;
-    private Long customerId;
+    private String customerId;
     private String paymentMethod;
     private BigDecimal totalPrice;
+    private LocalDateTime createdAt;
     private List<Item> ItemList;
 
     @Builder(builderMethodName = "builder")
-    public static Order newOrder(@NonNull String clientName, Long customerId, @NonNull String paymentMethod) {
+    public static Order newOrder(@NonNull String clientName, String customerId, @NonNull String paymentMethod) {
         return new Order(null, OrderStatusEnum.NEW, clientName, customerId, paymentMethod, new BigDecimal(0.0),
-                new ArrayList<>());
+                LocalDateTime.now(), new ArrayList<>());
     }
 
     public void updateId(Long id) {
@@ -58,6 +60,8 @@ public class Order {
         private BigDecimal price;
 
         private String description;
+
+        private String additionalInfo;
 
         @NonNull
         private Long productId;

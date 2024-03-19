@@ -1,8 +1,11 @@
 package com.fiap.techchallenge.order.gateway.entity;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -31,20 +34,24 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "client")
+    @Column(name = "client", nullable = false, columnDefinition = "varchar(255) NOT NULL")
     private String client;
 
-    @Column(name = "customer_id")
-    private Long customerId;
+    @Column(name = "customer_id", columnDefinition = "varchar(255) DEFAULT NULL")
+    private String customerId;
 
-    @Column(name = "payment_method")
+    @Column(name = "payment_method", nullable = false, columnDefinition = "varchar(255) NOT NULL")
     private String paymentMethod;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false, columnDefinition = "decimal(38,2) DEFAULT 0.00")
     private BigDecimal price;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false, columnDefinition = "varchar(255) DEFAULT 'new'")
     private String status;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime DEFAULT current_timestamp()")
+    private LocalDateTime createdAt;
 
     @Builder.Default
     @OneToMany(mappedBy = "order", orphanRemoval = true, cascade = CascadeType.ALL)

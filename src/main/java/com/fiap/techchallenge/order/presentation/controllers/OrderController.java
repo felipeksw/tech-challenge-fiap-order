@@ -65,11 +65,13 @@ public class OrderController {
                 .map(orderItem -> Command.OrderItem.builder()
                         .productId(orderItem.productId())
                         .quantity(orderItem.quantity())
+                        .additionalInfo(orderItem.additionalInfo())
                         .build())
                 .collect(Collectors.toList());
 
         return Command.builder()
                 .clientName(orderRequest.clientName())
+                .customerId(orderRequest.customerId())
                 .paymentMethod(orderRequest.paymentMethod())
                 .orderItemList(orderItemList)
                 .build();
@@ -85,13 +87,15 @@ public class OrderController {
     @Builder
     public record Request(
             @NotBlank(message = "O nome do cliente é obrigatório") String clientName,
+            String customerId,
             @NotBlank(message = "O método de pagamento é obrigatório") String paymentMethod,
             @NotEmpty(message = "Pelo menos um item de pedido é obrigatório") @Valid OrderRequestItem[] orderItems) {
 
         @Builder
         public record OrderRequestItem(
                 @NotNull(message = "O ID do produto é obrigatório") Long productId,
-                @NotNull(message = "A quantidade do produto é obrigatória") Long quantity) {
+                @NotNull(message = "A quantidade do produto é obrigatória") Long quantity,
+                String additionalInfo) {
         }
 
     }

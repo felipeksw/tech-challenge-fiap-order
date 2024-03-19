@@ -17,11 +17,13 @@ public class OrderMapper {
                 .paymentMethod(order.getPaymentMethod())
                 .price(order.getTotalPrice())
                 .status(order.getStatus().getStatus())
+                .createdAt(order.getCreatedAt())
                 .build();
 
         for (Order.Item item : order.getItemList()) {
             OrderItemEntity itemEntity = OrderItemEntity.builder()
                     .description(item.getDescription())
+                    .additionalInfo(item.getAdditionalInfo())
                     .productId(item.getProductId())
                     .quantity(item.getQuantity())
                     .build();

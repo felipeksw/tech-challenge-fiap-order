@@ -1,5 +1,6 @@
 package com.fiap.techchallenge.order.domain.entity;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigDecimal;
@@ -17,7 +18,8 @@ public class OrderTest {
     @Test
     void givenNullOrderClientName_WhenBuildOrder_ThenThrownNullPointer() {
         Assertions.assertThrows(NullPointerException.class, () -> Order.builder()
-                .customerId(1L)
+                .clientName(null)
+                .customerId("54321")
                 .paymentMethod("qrCode")
                 .build());
     }
@@ -26,50 +28,46 @@ public class OrderTest {
     void givenNullOrderPaymentMethod_WhenBuildOrder_ThenThrownNullPointer() {
         Assertions.assertThrows(NullPointerException.class, () -> Order.builder()
                 .clientName("The clientName")
-                .customerId(1L)
+                .customerId("54321")
+                .paymentMethod(null)
                 .build());
     }
 
     @Test
     void givenNullItemPrice_WhenBuildItem_ThenThrownNullPointer() {
-        Assertions.assertThrows(NullPointerException.class, () -> Order.Item.builder()
-                .description("The description")
-                .productId(1L)
-                .quantity(1L)
+        Assertions.assertThrows(NullPointerException.class, () -> createDefaultOrderItemBuilder()
+                .price(null)
                 .build());
     }
 
     @Test
     void givenNullItemProductId_WhenBuildItem_ThenThrownNullPointer() {
-        Assertions.assertThrows(NullPointerException.class, () -> Order.Item.builder()
-                .price(new BigDecimal(1.0))
-                .description("The description")
-                .quantity(1L)
+        Assertions.assertThrows(NullPointerException.class, () -> createDefaultOrderItemBuilder()
+                .productId(null)
                 .build());
     }
 
     @Test
     void givenNullItemPQuantity_WhenBuildItem_ThenThrownNullPointer() {
-        Assertions.assertThrows(NullPointerException.class, () -> Order.Item.builder()
-                .price(new BigDecimal(1.0))
-                .description("The description")
-                .productId(1L)
+        Assertions.assertThrows(NullPointerException.class, () -> createDefaultOrderItemBuilder()
+                .quantity(null)
                 .build());
     }
 
     @Test
-    void when_buildingOrder_then_getOrderStatusNew() {
+    void when_buildingOrder_then_getOrderStatusNewAndCreatedDate() {
         Order order = Order.builder()
                 .clientName("The clientName")
-                .customerId(1L)
+                .customerId("54321")
                 .paymentMethod("qrCode")
                 .build();
 
         assertEquals(OrderStatusEnum.NEW, order.getStatus());
         assertEquals("The clientName", order.getClientName());
-        assertEquals(1L, order.getCustomerId());
+        assertEquals("54321", order.getCustomerId());
         assertEquals("qrCode", order.getPaymentMethod());
         assertEquals(new BigDecimal(0.0), order.getTotalPrice());
+        assertNotNull(order.getCreatedAt());
         assertEquals(0, order.getItemList().size());
     }
 
@@ -96,7 +94,7 @@ public class OrderTest {
     Order buildDefaultOrder() {
         return Order.builder()
                 .clientName("The clientName")
-                .customerId(1L)
+                .customerId("54321")
                 .paymentMethod("qrCode")
                 .build();
     }
@@ -105,7 +103,9 @@ public class OrderTest {
         return Order.Item.builder()
                 .price(new BigDecimal(5.0))
                 .description("The description")
+                .additionalInfo("The additionalInfo")
                 .productId(1L)
                 .quantity(1L);
     }
+
 }

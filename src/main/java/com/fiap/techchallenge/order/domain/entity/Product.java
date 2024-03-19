@@ -11,9 +11,10 @@ import lombok.NonNull;
 public class Product {
 
     private Long id;
-
     private String category;
     private String description;
-    @NonNull private BigDecimal price;
+
+    @NonNull
+    private BigDecimal price;
 
 }

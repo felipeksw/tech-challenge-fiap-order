@@ -50,8 +50,9 @@ public class MakeOrderUseCasesTest {
         // Arrange
         MakeOrderUseCases.Command command = MakeOrderUseCases.Command.builder()
                 .clientName("John Doe")
+                .customerId("54321")
                 .paymentMethod("qrCode")
-                .orderItemList(Collections.singletonList(new MakeOrderUseCases.Command.OrderItem(1L, 2L)))
+                .orderItemList(Collections.singletonList(createDefaultOrderItem()))
                 .build();
 
         doAnswer(invocation -> {
@@ -59,7 +60,7 @@ public class MakeOrderUseCasesTest {
             savedOrder.updateId(1L);
             return savedOrder;
         }).when(orderService).saveOrder(any(Order.class));
-        when(productService.findProduct(1L)).thenReturn(createProduct());
+        when(productService.findProduct(1L)).thenReturn(createDefaultProduct());
         when(generatePaymentQRCodePort.generate(any())).thenReturn("123456789");
 
         // Act
@@ -79,8 +80,9 @@ public class MakeOrderUseCasesTest {
         // Arrange
         MakeOrderUseCases.Command command = MakeOrderUseCases.Command.builder()
                 .clientName("John Doe")
+                .customerId("54321")
                 .paymentMethod("qrCode")
-                .orderItemList(Collections.singletonList(new MakeOrderUseCases.Command.OrderItem(1L, 2L)))
+                .orderItemList(Collections.singletonList(createDefaultOrderItem()))
                 .build();
         when(productService.findProduct(1L)).thenThrow(new GetProductException("Product not found"));
 
@@ -90,12 +92,20 @@ public class MakeOrderUseCasesTest {
         });
     }
 
-    private Product createProduct() {
+    private Product createDefaultProduct() {
         return Product.builder()
                 .id(1L)
                 .category("Lanche")
                 .description("X-Salada")
                 .price(new BigDecimal("23.99"))
+                .build();
+    }
+
+    private MakeOrderUseCases.Command.OrderItem createDefaultOrderItem() {
+        return MakeOrderUseCases.Command.OrderItem.builder()
+                .productId(1L)
+                .quantity(2l)
+                .additionalInfo("The additionalInfo")
                 .build();
     }
 

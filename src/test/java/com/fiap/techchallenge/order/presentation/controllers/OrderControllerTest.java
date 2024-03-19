@@ -36,9 +36,10 @@ public class OrderControllerTest {
         // Arrange
         OrderController.Request request = OrderController.Request.builder()
                 .clientName("John Doe")
+                .customerId("54321")
                 .paymentMethod("qrCode")
                 .orderItems(new OrderController.Request.OrderRequestItem[] {
-                        new OrderController.Request.OrderRequestItem(1L, 2L) })
+                        createDefaultOrderItemBuilder().build() })
                 .build();
         MakeOrderUseCases.Result expectedResult = MakeOrderUseCases.Result.builder()
                 .orderId(123L)
@@ -56,13 +57,47 @@ public class OrderControllerTest {
     }
 
     @Test
-    void givenInvalidRequest_whenMakeOrder_thenReturnBadRequest() throws Exception {
+    void givenInvalidClientNameInRequest_whenMakeOrder_thenReturnBadRequest() throws Exception {
         // Arrange
         OrderController.Request request = OrderController.Request.builder()
                 .clientName(null) // Invalid client name
                 .paymentMethod("qrCode")
                 .orderItems(new OrderController.Request.OrderRequestItem[] {
-                        new OrderController.Request.OrderRequestItem(1L, 2L) })
+                        createDefaultOrderItemBuilder().build() })
+                .build();
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/order")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void givenInvalidProductIdInRequest_whenMakeOrder_thenReturnBadRequest() throws Exception {
+        // Arrange
+        OrderController.Request request = OrderController.Request.builder()
+                .clientName("John Doe")
+                .paymentMethod("qrCode")
+                .orderItems(new OrderController.Request.OrderRequestItem[] {
+                        createDefaultOrderItemBuilder().productId(null).build() })
+                .build();
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/order")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void givenInvalidQuantityInRequest_whenMakeOrder_thenReturnBadRequest() throws Exception {
+        // Arrange
+        OrderController.Request request = OrderController.Request.builder()
+                .clientName("John Doe")
+                .paymentMethod("qrCode")
+                .orderItems(new OrderController.Request.OrderRequestItem[] {
+                        createDefaultOrderItemBuilder().quantity(null).build() })
                 .build();
 
         // Act & Assert
@@ -77,9 +112,10 @@ public class OrderControllerTest {
         // Arrange
         OrderController.Request request = OrderController.Request.builder()
                 .clientName("John Doe")
+                .customerId("54321")
                 .paymentMethod("qrCode")
                 .orderItems(new OrderController.Request.OrderRequestItem[] {
-                        new OrderController.Request.OrderRequestItem(1L, 2L) })
+                        createDefaultOrderItemBuilder().build() })
                 .build();
         when(makeOrderUseCases.makeOrder(any())).thenThrow(new MakeOrderException("Falha ao realizar pedido"));
 
@@ -88,6 +124,13 @@ public class OrderControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isInternalServerError());
+    }
+
+    private OrderController.Request.OrderRequestItem.OrderRequestItemBuilder createDefaultOrderItemBuilder() {
+        return OrderController.Request.OrderRequestItem.builder()
+                .productId(1L)
+                .quantity(2L)
+                .additionalInfo("The additionalInfo");
     }
 
 }

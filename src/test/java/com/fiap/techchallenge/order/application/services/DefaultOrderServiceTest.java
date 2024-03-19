@@ -64,7 +64,7 @@ public class DefaultOrderServiceTest {
     Order createDefaultOrder() {
         return Order.builder()
                 .clientName("John Doe")
-                .customerId(123L)
+                .customerId("54321")
                 .paymentMethod("qrCode")
                 .build();
     }
@@ -73,7 +73,7 @@ public class DefaultOrderServiceTest {
         return OrderEntity.builder()
                 .id(1L)
                 .client("John Doe")
-                .customerId(123L)
+                .customerId("54321")
                 .paymentMethod("Credit Card")
                 .build();
     }

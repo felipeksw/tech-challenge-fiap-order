@@ -53,7 +53,7 @@ public class MakeOrderUseCases {
     private Order createNewOrder(Command cmd) throws GetProductException {
         Order order = Order.builder()
                 .clientName(cmd.clientName())
-                .customerId(null)
+                .customerId(cmd.customerId())
                 .paymentMethod(cmd.paymentMethod())
                 .build();
 
@@ -87,13 +87,15 @@ public class MakeOrderUseCases {
     @Builder
     public record Command(
             String clientName,
+            String customerId,
             String paymentMethod,
             List<OrderItem> orderItemList) {
 
         @Builder
         public record OrderItem(
                 long productId,
-                long quantity) {
+                long quantity,
+                String additionalInfo) {
         }
     }
 
