@@ -63,6 +63,7 @@ public class MakeOrderUseCases {
             Order.Item item = Order.Item.builder()
                     .price(product.getPrice())
                     .description(product.getDescription())
+                    .additionalInfo(orderItem.additionalInfo())
                     .productId(product.getId())
                     .quantity(orderItem.quantity())
                     .build();
