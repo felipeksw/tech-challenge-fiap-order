@@ -4,6 +4,6 @@ import com.fiap.techchallenge.order.gateway.exception.SendRequestedPaymentExcept
 
 public interface SendRequestedPaymentPort {
 
-    void send(Long orderId) throws SendRequestedPaymentException;
+    void send(Long orderId, String customerId) throws SendRequestedPaymentException;
 
 }

@@ -40,14 +40,16 @@ public class SendRequestedPaymentAdapterTest {
     void givenValidOrderId_whenSend_thenSendsMessageToKafka() throws Exception {
         // Arrange
         Long orderId = 123L;
+        String customerId = "1";
         SendRequestedPaymentAdapter.Payload payload = SendRequestedPaymentAdapter.Payload.builder()
                 .orderId(String.valueOf(orderId))
+                .customerId(customerId)
                 .build();
         String message = "{\"orderId\":\"123\"}";
         when(objectMapper.writeValueAsString(payload)).thenReturn(message);
 
         // Act
-        sendRequestedPaymentAdapter.send(orderId);
+        sendRequestedPaymentAdapter.send(orderId, customerId);
 
         // Assert
         verify(kafkaTemplate, times(1)).send(TOPIC, message);
@@ -57,11 +59,12 @@ public class SendRequestedPaymentAdapterTest {
     void givenJsonProcessingError_whenSend_thenThrowsException() throws JsonProcessingException {
         // Arrange
         Long orderId = 123L;
+        String customerId = "1";
         when(objectMapper.writeValueAsString(any())).thenThrow(JsonProcessingException.class);
 
         // Act & Assert
         assertThrows(SendRequestedPaymentException.class, () -> {
-            sendRequestedPaymentAdapter.send(orderId);
+            sendRequestedPaymentAdapter.send(orderId, customerId);
         });
     }
 
@@ -69,11 +72,12 @@ public class SendRequestedPaymentAdapterTest {
     void givenGenericError_whenSend_thenThrowsException() throws Exception {
         // Arrange
         Long orderId = 123L;
+        String customerId = "1";
         when(objectMapper.writeValueAsString(any())).thenThrow(RuntimeException.class);
 
         // Act & Assert
         assertThrows(SendRequestedPaymentException.class, () -> {
-            sendRequestedPaymentAdapter.send(orderId);
+            sendRequestedPaymentAdapter.send(orderId, customerId);
         });
     }
 

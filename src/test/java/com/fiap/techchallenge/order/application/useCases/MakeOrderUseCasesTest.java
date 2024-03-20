@@ -49,7 +49,7 @@ public class MakeOrderUseCasesTest {
     public void testMakeOrder_Successful() throws Exception {
         // Arrange
         byte[] qrCode = new byte[] { 0x50, 0x4E, 0x47 };
-        MakeOrderUseCases.Command command = MakeOrderUseCases.Command.builder()
+        MakeOrderUseCases.Command cmd = MakeOrderUseCases.Command.builder()
                 .clientName("John Doe")
                 .customerId("54321")
                 .paymentMethod("qrCode")
@@ -65,7 +65,7 @@ public class MakeOrderUseCasesTest {
         when(generatePaymentQRCodePort.generate(any())).thenReturn(qrCode);
 
         // Act
-        MakeOrderUseCases.Result result = makeOrderUseCases.makeOrder(command);
+        MakeOrderUseCases.Result result = makeOrderUseCases.makeOrder(cmd);
 
         // Assert
         assertNotNull(result);
@@ -73,7 +73,7 @@ public class MakeOrderUseCasesTest {
         assertEquals(qrCode, result.qrCode());
 
         verify(orderService, times(1)).saveOrder(any());
-        verify(sendRequestedPaymentPort, times(1)).send(result.orderId());
+        verify(sendRequestedPaymentPort, times(1)).send(result.orderId(), cmd.customerId());
     }
 
     @Test

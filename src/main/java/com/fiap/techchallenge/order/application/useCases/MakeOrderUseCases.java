@@ -37,7 +37,7 @@ public class MakeOrderUseCases {
 
             byte[] qrCode = generatePaymentQRCode(order);
 
-            sendRequestedPaymentPort.send(order.getId());
+            sendRequestedPaymentPort.send(order.getId(), cmd.customerId());
 
             return Result.builder()
                     .orderId(order.getId())
