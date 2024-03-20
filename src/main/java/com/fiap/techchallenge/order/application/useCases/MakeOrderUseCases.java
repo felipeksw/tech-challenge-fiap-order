@@ -78,7 +78,8 @@ public class MakeOrderUseCases {
         GeneratePaymentQRCodePort.Request request = GeneratePaymentQRCodePort.Request.builder()
                 .orderId("" + order.getId())
                 .description(ConstantsUtil.PAYMENT_TITLE_PREFIX + order.getClientName())
-                .quantity(Long.valueOf(order.getTotalItems()))
+                //.quantity(Long.valueOf(order.getTotalItems()))
+                .quantity(1l)
                 .unitPrice(order.getTotalPrice())
                 .build();
 
