@@ -2,6 +2,8 @@ package com.fiap.techchallenge.order.gateway.adapter;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import okio.Buffer;
+
 import org.junit.jupiter.api.*;
 
 import com.fiap.techchallenge.order.gateway.exception.GeneratePaymentQRCodeException;
@@ -33,21 +35,26 @@ class GeneratePaymentQRCodeAdapterTest {
     @Test
     void when_generateQrCodeWithResponseCode200_then_ReturnQrCode() throws Exception {
         // Arrange
+        byte[] imageData = new byte[] { 0x50, 0x4E, 0x47 };
+        Buffer imageBuffer = new Buffer();
+        imageBuffer.write(imageData);
+
+        // Arrange
         mockWebServer.enqueue(new MockResponse()
-                .setBody("{\"qrCode\": \"123456789\"}")
-                .addHeader("Content-Type", "application/json"));
+                .setBody(imageBuffer)
+                .addHeader("Content-Type", "image/png"));
         GeneratePaymentQRCodePort.Request request = GeneratePaymentQRCodePort.Request.builder()
-                .orderId(1L)
+                .orderId("1")
+                .description("The description")
                 .quantity(2L)
-                .price(new BigDecimal(23.99))
-                .title("The title")
+                .unitPrice(new BigDecimal(23.99))
                 .build();
 
         // Act
-        String qrCode = generatePaymentQRCodeAdapter.generate(request);
+        byte[] qrCode = generatePaymentQRCodeAdapter.generate(request);
 
         // Assert
-        assertEquals("123456789", qrCode);
+        assertEquals(imageBuffer.size(), qrCode.length);
     }
 
     @Test
@@ -55,10 +62,10 @@ class GeneratePaymentQRCodeAdapterTest {
         // Arrange
         mockWebServer.enqueue(new MockResponse().setResponseCode(500)); // Simulating server error
         GeneratePaymentQRCodePort.Request request = GeneratePaymentQRCodePort.Request.builder()
-                .orderId(1L)
+                .orderId("1")
+                .description("The description")
                 .quantity(2L)
-                .price(new BigDecimal(23.99))
-                .title("The title")
+                .unitPrice(new BigDecimal(23.99))
                 .build();
 
         // Act & Assert

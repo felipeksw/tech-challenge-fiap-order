@@ -103,7 +103,7 @@ public class OrderController {
     @Builder
     public record Response(
             Long orderId,
-            String qrCode) {
+            byte[] qrCode) {
     }
 
 }

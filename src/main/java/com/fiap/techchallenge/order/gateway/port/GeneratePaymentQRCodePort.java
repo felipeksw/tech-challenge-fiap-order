@@ -2,6 +2,7 @@ package com.fiap.techchallenge.order.gateway.port;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fiap.techchallenge.order.gateway.exception.GeneratePaymentQRCodeException;
 
 import lombok.Builder;
@@ -9,14 +10,14 @@ import lombok.NonNull;
 
 public interface GeneratePaymentQRCodePort {
 
-    String generate(Request request) throws GeneratePaymentQRCodeException;
+    byte[] generate(Request request) throws GeneratePaymentQRCodeException;
 
     @Builder
     public record Request(
-            @NonNull Long orderId,
+            @JsonProperty("order_id") @NonNull String orderId,
+            @NonNull String description,
             @NonNull Long quantity,
-            @NonNull BigDecimal price,
-            @NonNull String title) {
+            @JsonProperty("unit_price") @NonNull BigDecimal unitPrice) {
     }
 
 }
