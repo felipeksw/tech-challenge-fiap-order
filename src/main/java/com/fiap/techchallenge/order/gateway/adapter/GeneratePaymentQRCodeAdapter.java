@@ -20,9 +20,8 @@ public class GeneratePaymentQRCodeAdapter implements GeneratePaymentQRCodePort {
 
         this.webClient = WebClient.builder()
                 .baseUrl(paymentUrl)
-                //.defaultHeader("Content-Type", "application/json")
-                .defaultHeader("Content-Type", "image/png")
-                .defaultHeader("Accept", "image/png")
+                .defaultHeader("Content-Type", "application/json")
+                .defaultHeader("Accept", "*/*")
                 .filter(WebClientHandler.handler())
                 .build();
     }

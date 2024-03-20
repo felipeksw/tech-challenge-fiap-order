@@ -32,6 +32,30 @@ class GeneratePaymentQRCodeAdapterTest {
         mockWebServer.shutdown();
     }
 
+    @Test
+    void when_generateQrCodeWithResponseCode200_then_ReturnQrCode() throws Exception {
+        // Arrange
+        byte[] imageData = new byte[] { 0x50, 0x4E, 0x47 };
+        Buffer imageBuffer = new Buffer();
+        imageBuffer.write(imageData);
+
+        // Arrange
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(imageBuffer)
+                .addHeader("Content-Type", "image/png"));
+        GeneratePaymentQRCodePort.Request request = GeneratePaymentQRCodePort.Request.builder()
+                .orderId("1")
+                .description("The description")
+                .quantity(2L)
+                .unitPrice(new BigDecimal(23.99))
+                .build();
+
+        // Act
+        byte[] qrCode = generatePaymentQRCodeAdapter.generate(request);
+
+        // Assert
+        assertEquals(imageBuffer.size(), qrCode.length);
+    }
 
     @Test
     void when_generateQrCodeWithResponseCode500_then_ExceptionThrown() throws InterruptedException {
