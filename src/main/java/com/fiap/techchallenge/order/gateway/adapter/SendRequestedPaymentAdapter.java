@@ -29,9 +29,9 @@ public class SendRequestedPaymentAdapter implements SendRequestedPaymentPort {
         this.objectMapper = objectMapper;
     }
 
-    public void send(Long orderId) throws SendRequestedPaymentException {
+    public void send(Long orderId, String customerId) throws SendRequestedPaymentException {
         try {
-            Payload payload = createPayload(orderId);
+            Payload payload = createPayload(orderId, customerId);
             String message = objectMapper.writeValueAsString(payload);
 
             log.info("Sending to kafka: {}", message);
@@ -48,15 +48,17 @@ public class SendRequestedPaymentAdapter implements SendRequestedPaymentPort {
         }
     }
 
-    private Payload createPayload(Long orderId) {
+    private Payload createPayload(Long orderId, String customerId) {
         return Payload.builder()
                 .orderId(String.valueOf(orderId))
+                .customerId(customerId)
                 .build();
     }
 
     @Builder
     protected record Payload(
-            String orderId) {
+            String orderId,
+            String customerId) {
     }
 
 }
