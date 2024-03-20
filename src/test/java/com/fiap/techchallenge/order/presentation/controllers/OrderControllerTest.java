@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fiap.techchallenge.order.application.exceptions.MakeOrderException;
 import com.fiap.techchallenge.order.application.useCases.MakeOrderUseCases;
 
+import jakarta.xml.bind.DatatypeConverter;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,9 +45,11 @@ public class OrderControllerTest {
                 .build();
         MakeOrderUseCases.Result expectedResult = MakeOrderUseCases.Result.builder()
                 .orderId(123L)
-                .qrCode("123456789")
+                .qrCode(new byte[] { 0x50, 0x4E, 0x47 })
                 .build();
-        when(makeOrderUseCases.makeOrder(any())).thenReturn(new MakeOrderUseCases.Result(123L, "123456789"));
+        when(makeOrderUseCases.makeOrder(any()))
+                .thenReturn(new MakeOrderUseCases.Result(123L, new byte[] { 0x50, 0x4E, 0x47 }));
+        String expectedQrCodeHex = DatatypeConverter.printBase64Binary(expectedResult.qrCode());
 
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/order")
@@ -53,7 +57,7 @@ public class OrderControllerTest {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.orderId").value(expectedResult.orderId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.qrCode").value(expectedResult.qrCode()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.qrCode").value(expectedQrCodeHex));
     }
 
     @Test

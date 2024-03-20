@@ -35,7 +35,7 @@ public class MakeOrderUseCases {
 
             orderService.saveOrder(order);
 
-            String qrCode = generatePaymentQRCode(order);
+            byte[] qrCode = generatePaymentQRCode(order);
 
             sendRequestedPaymentPort.send(order.getId());
 
@@ -74,12 +74,12 @@ public class MakeOrderUseCases {
         return order;
     }
 
-    private String generatePaymentQRCode(Order order) throws GeneratePaymentQRCodeException {
+    private byte[] generatePaymentQRCode(Order order) throws GeneratePaymentQRCodeException {
         GeneratePaymentQRCodePort.Request request = GeneratePaymentQRCodePort.Request.builder()
-                .orderId(order.getId())
+                .orderId("" + order.getId())
+                .description(ConstantsUtil.PAYMENT_TITLE_PREFIX + order.getClientName())
                 .quantity(Long.valueOf(order.getTotalItems()))
-                .price(order.getTotalPrice())
-                .title(ConstantsUtil.PAYMENT_TITLE_PREFIX + order.getClientName())
+                .unitPrice(order.getTotalPrice())
                 .build();
 
         return generatePaymentQRCodePort.generate(request);
@@ -103,7 +103,7 @@ public class MakeOrderUseCases {
     @Builder
     public record Result(
             Long orderId,
-            String qrCode) {
+            byte[] qrCode) {
     }
 
 }

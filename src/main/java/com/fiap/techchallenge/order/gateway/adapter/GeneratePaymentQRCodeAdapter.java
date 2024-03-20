@@ -21,30 +21,26 @@ public class GeneratePaymentQRCodeAdapter implements GeneratePaymentQRCodePort {
         this.webClient = WebClient.builder()
                 .baseUrl(paymentUrl)
                 .defaultHeader("Content-Type", "application/json")
-                .defaultHeader("Accept", "application/json")
+                .defaultHeader("Accept", "image/png")
                 .filter(WebClientHandler.handler())
                 .build();
     }
 
-    public String generate(Request request) throws GeneratePaymentQRCodeException {
+    public byte[] generate(Request request) throws GeneratePaymentQRCodeException {
         try {
-            Response response = webClient
+            byte[] qrCodeImage = webClient
                     .post()
                     .bodyValue(request)
                     .retrieve()
-                    .bodyToMono(Response.class)
+                    .bodyToMono(byte[].class)
                     .block();
 
-            return response.qrCode;
+            return qrCodeImage;
         } catch (Exception e) {
             log.error("Payment service request failed");
 
             throw new GeneratePaymentQRCodeException(e.getMessage());
         }
-    }
-
-    private record Response(
-            String qrCode) {
     }
 
 }
